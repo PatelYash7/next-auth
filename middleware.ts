@@ -1,4 +1,6 @@
-// import NextAuth from "next-auth/next";
-// import { auth } from "./lib/auth";
+export {default} from 'next-auth/middleware'
 
-// export default NextAuth(auth)
+
+export const config ={
+    matcher:'/main'
+}

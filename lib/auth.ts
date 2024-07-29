@@ -1,7 +1,6 @@
 import CredentialsProvider from "next-auth/providers/credentials";
 import { PrismaClient } from "@prisma/client";
 import { NextAuthOptions } from "next-auth";
-import { error } from "console";
 const prisma = new PrismaClient();
 
 export const authOptions: NextAuthOptions = {
@@ -15,28 +14,30 @@ export const authOptions: NextAuthOptions = {
         password: { label: "Password", type: "password" },
       },
       async authorize(credentials: any): Promise<any> {
+        console.log(credentials)
         try {
           const User = await prisma.user.findFirst({
             where: {
               email: credentials.email,
             },
           });
+          console.log(User)
           if (!User) {
-            const data = await prisma.user.create({
+            const user = await prisma.user.create({
               data: {
                 email: credentials.email,
                 password: credentials.password,
               },
             });
-            return data;
+            return user;
           } else {
-            const data = await prisma.user.findFirst({
+            const user = await prisma.user.findFirst({
               where: {
                 email: credentials.email,
                 password: credentials.password,
               },
             });
-            return data;
+            return user;
           }
         } catch (e) {
           throw new Error();
@@ -45,11 +46,21 @@ export const authOptions: NextAuthOptions = {
     }),
   ],
   callbacks: {
-    async session({ session, user, token }) {
-      return session;
-    },
-    async jwt({ token, user, account, profile, isNewUser }) {
+    async jwt({ token, user }) {
+      if(user){
+        token.id=user.id.toString()
+        token.name = user.name?.toString();
+        token.rollno = user.rollno
+      }
       return token;
+    },
+    async session({ session,token }) {
+      if(token){
+        session.user.email=token.email
+        session.user.name= token.name
+        session.user.rollno= token.rollno
+      }
+      return session;
     },
   },
   session: {
