@@ -14,14 +14,12 @@ export const authOptions: NextAuthOptions = {
         password: { label: "Password", type: "password" },
       },
       async authorize(credentials: any): Promise<any> {
-        console.log(credentials);
         try {
           const User = await prisma.user.findFirst({
             where: {
               email: credentials.email,
             },
           });
-          console.log(User);
           if (!User) {
             const user = await prisma.user.create({
               data: {

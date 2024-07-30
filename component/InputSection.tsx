@@ -54,6 +54,14 @@ export const InputSection = () => {
           >
             Submit RollNo
           </Button>
+          <Button onClick={()=>{
+            update({
+              rollno:rollno,
+              name:name
+            })
+          }}>
+            Update All
+          </Button>
         </div>
       </div>
     </div>
