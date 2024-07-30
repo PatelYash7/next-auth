@@ -1,14 +1,18 @@
-'use client'
+import { InputSection } from "@/component/InputSection";
+import { authOptions } from "@/lib/auth";
+import { getServerSession } from "next-auth";
 
-import { Button } from "@/components/ui/button"
-import { signOut } from "next-auth/react"
-
-export default function (){
-    return <div className="bg-orange-200 h-screen ">
-            Hello From Main
-
-            <Button onClick={()=>{signOut({redirect: false, callbackUrl: "/"})}}>
-                SignOUT
-            </Button>
+export default async function () {
+  const session = await getServerSession(authOptions);
+  return (
+    <div className="bg-orange-200 h-screen ">
+      <div className="bg-blue-500 text-white">
+        <div>ID:-{session?.user.id}</div>
+        <div>This is Server Session :-{session?.user.name}</div>
+        <div>RollNo:- {session?.user.rollno}</div>
+        {session?.user.email}
+      </div>
+      <InputSection />
     </div>
+  );
 }

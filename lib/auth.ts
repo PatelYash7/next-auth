@@ -14,14 +14,14 @@ export const authOptions: NextAuthOptions = {
         password: { label: "Password", type: "password" },
       },
       async authorize(credentials: any): Promise<any> {
-        console.log(credentials)
+        console.log(credentials);
         try {
           const User = await prisma.user.findFirst({
             where: {
               email: credentials.email,
             },
           });
-          console.log(User)
+          console.log(User);
           if (!User) {
             const user = await prisma.user.create({
               data: {
@@ -46,19 +46,58 @@ export const authOptions: NextAuthOptions = {
     }),
   ],
   callbacks: {
-    async jwt({ token, user }) {
-      if(user){
-        token.id=user.id.toString()
+    async jwt({ token, user, session, trigger }) {
+      if (trigger === "update" && (session.name || session.rollno) && token ) {
+        if (session.rollno && session.name) {
+          await prisma.user.update({
+            where: {
+              id: Number(token?.id),
+            },
+            data: {
+              name:session.name,
+              rollno: session.rollno,
+            },
+          });
+          token.rollno = session.rollno;
+          token.name = session.name;
+        }
+        if (session.rollno) {
+          await prisma.user.update({
+            where: {
+              id: Number(token?.id),
+            },
+            data: {
+              rollno: session.rollno,
+            },
+          });
+          token.rollno = session.rollno;
+        }
+        if (session.name) {
+          await prisma.user.update({
+            where: {
+              id: Number(token?.id),
+            },
+            data: {
+              name: session.name,
+            },
+          });
+          token.name = session.name;
+        }
+      }
+
+      if (user) {
+        token.id = user.id.toString();
         token.name = user.name?.toString();
-        token.rollno = user.rollno
+        token.rollno = user.rollno;
       }
       return token;
     },
-    async session({ session,token }) {
-      if(token){
-        session.user.email=token.email
-        session.user.name= token.name
-        session.user.rollno= token.rollno
+    async session({ session, token }) {
+      if (token) {
+        session.user.id = token.id;
+        session.user.email = token.email;
+        session.user.name = token.name;
+        session.user.rollno = token.rollno;
       }
       return session;
     },
