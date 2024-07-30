@@ -11,7 +11,7 @@ export default function Home() {
           Get started by editing&nbsp;
           <code className="font-mono font-bold">app/page.tsx</code>
         </p>
-        <Button onClick={()=>{signIn(undefined, { callbackUrl: '/main' })}}>
+        <Button onClick={()=>{signIn(undefined, { callbackUrl: 'http://94.176.232.195:3000/main' })}}>
           SignIn 
         </Button>
         

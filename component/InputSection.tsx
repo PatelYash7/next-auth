@@ -18,7 +18,7 @@ export const InputSection = () => {
       <div>
         <Button
           onClick={() => {
-            signOut({ callbackUrl: "http://localhost:3000" });
+            signOut({ callbackUrl: "http://94.176.232.195:3000/" });
           }}
         >
           SignOUT
