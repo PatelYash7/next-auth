@@ -2,7 +2,7 @@ import { InputSection } from "@/component/InputSection";
 import { authOptions } from "@/lib/auth";
 import { getServerSession } from "next-auth";
 
-export default async function () {
+export default async function Page () {
   const session = await getServerSession(authOptions);
   return (
     <div className="bg-orange-200 h-screen ">
